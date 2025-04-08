@@ -1,11 +1,11 @@
 import httpx
-from core.schemas import (
+from schemas import (
     ImageGenProperties,
     VideoGenProperties,
     SubtitleGenProperties,
     GetListParameters,
 )
-from core.settings import Settings
+from settings import Settings
 
 import logging
 

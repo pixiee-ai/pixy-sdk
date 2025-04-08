@@ -1,10 +1,10 @@
-from core.schemas import (
+from schemas import (
     ImageGenProperties,
     VideoGenProperties,
     SubtitleGenProperties,
     GetListParameters,
 )
-from core.utils import verify, generate, get_by_uid, get_list, delete, update
+from utils import verify, generate, get_by_uid, get_list, delete, update
 import logging
 
 logger = logging.getLogger(__name__)
