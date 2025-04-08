@@ -1,5 +1,5 @@
 import httpx
-from schemas import (
+from .schemas import (
     ImageGenProperties,
     VideoGenProperties,
     SubtitleGenProperties,

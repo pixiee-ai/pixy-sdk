@@ -2,7 +2,7 @@ import os
 from dotenv import load_dotenv
 
 load_dotenv()
-from schemas import ImageGenProperties, VideoGenProperties, SubtitleGenProperties
+from .schemas import ImageGenProperties, VideoGenProperties, SubtitleGenProperties
 
 
 class Settings:
