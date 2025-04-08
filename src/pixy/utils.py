@@ -5,7 +5,7 @@ from .schemas import (
     SubtitleGenProperties,
     GetListParameters,
 )
-from settings import Settings
+from .settings import Settings
 
 import logging
 
