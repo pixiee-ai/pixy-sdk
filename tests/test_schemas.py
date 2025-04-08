@@ -15,7 +15,7 @@ import pytest
 class TestImageGenProperties:
     def test_imagegenproperties_default_values(self):
         """Test default values for aspect_ratio, context, and enhance_prompt."""
-        props = ImageGenProperties(engine=ImageGenEngine.IMAGEN, delination="test")
+        props = ImageGenProperties(engine=ImageGenEngine.IMAGEN, delineation="test")
         assert props.aspect_ratio == "1:1"
         assert props.context == [{}]
         assert props.enhance_prompt is False
@@ -23,7 +23,7 @@ class TestImageGenProperties:
     def test_imagegenproperties_valid_aspect_ratio(self):
         """Test that a valid aspect ratio is accepted."""
         props = ImageGenProperties(
-            engine=ImageGenEngine.IMAGEN, aspect_ratio="16:9", delination="test"
+            engine=ImageGenEngine.IMAGEN, aspect_ratio="16:9", delineation="test"
         )
         assert props.aspect_ratio == "16:9"
 
@@ -31,7 +31,7 @@ class TestImageGenProperties:
         """Test that an invalid aspect ratio raises a ValueError."""
         with pytest.raises(ValidationError) as excinfo:
             ImageGenProperties(
-                engine=ImageGenEngine.IMAGEN, aspect_ratio="2:1", delination="test"
+                engine=ImageGenEngine.IMAGEN, aspect_ratio="2:1", delineation="test"
             )
         assert (
             "Invalid aspect ratio '2:1' for engine 'imagen'. Allowed ratios are: ['9:16', '1:1', '16:9', '4:3', '3:4']"
@@ -41,7 +41,7 @@ class TestImageGenProperties:
     def test_imagegenproperties_different_engine_aspect_ratio(self):
         """Test aspect ratio validation with a different engine."""
         props = ImageGenProperties(
-            engine=ImageGenEngine.DALLE, aspect_ratio="4:7", delination="test"
+            engine=ImageGenEngine.DALLE, aspect_ratio="4:7", delineation="test"
         )
         assert props.aspect_ratio == "4:7"
 
@@ -49,7 +49,7 @@ class TestImageGenProperties:
         """Test that an invalid aspect ratio raises a ValueError with a different engine."""
         with pytest.raises(ValidationError) as excinfo:
             ImageGenProperties(
-                engine=ImageGenEngine.DALLE, aspect_ratio="16:9", delination="test"
+                engine=ImageGenEngine.DALLE, aspect_ratio="16:9", delineation="test"
             )
         assert (
             "Invalid aspect ratio '16:9' for engine 'dalle'. Allowed ratios are: ['1:1', '4:7', '7:4']"
@@ -62,7 +62,7 @@ class TestImageGenProperties:
         props = ImageGenProperties(
             engine=ImageGenEngine.IMAGEN,
             aspect_ratio="1:1",
-            delination="test",
+            delineation="test",
             context=context_data,
         )
         assert props.context == context_data
@@ -70,7 +70,7 @@ class TestImageGenProperties:
     def test_imagegenproperties_enhance_prompt_true(self):
         """Test when enhance_prompt is set to True."""
         props = ImageGenProperties(
-            engine=ImageGenEngine.IMAGEN, delination="test", enhance_prompt=True
+            engine=ImageGenEngine.IMAGEN, delineation="test", enhance_prompt=True
         )
         assert props.enhance_prompt is True
 
@@ -80,21 +80,21 @@ class TestImageGenProperties:
         props = ImageGenProperties(
             engine=ImageGenEngine.FLUX_SCHNELL,
             aspect_ratio="4:5",
-            delination="a photo",
+            delineation="a photo",
             context=context_data,
             enhance_prompt=True,
         )
         assert props.engine == ImageGenEngine.FLUX_SCHNELL
         assert props.aspect_ratio == "4:5"
-        assert props.delination == "a photo"
+        assert props.delineation == "a photo"
         assert props.context == context_data
         assert props.enhance_prompt is True
 
     def test_imagegenproperties_engine_only(self):
-        """Test creating an instance with only the engine and delination specified."""
-        props = ImageGenProperties(engine=ImageGenEngine.IMAGEN, delination="test")
+        """Test creating an instance with only the engine and delineation specified."""
+        props = ImageGenProperties(engine=ImageGenEngine.IMAGEN, delineation="test")
         assert props.engine == ImageGenEngine.IMAGEN
-        assert props.delination == "test"
+        assert props.delineation == "test"
         assert props.aspect_ratio == "1:1"  # Default value
         assert props.context == [{}]  # Default value
         assert props.enhance_prompt is False  # Default value
@@ -103,7 +103,7 @@ class TestImageGenProperties:
         """Test that an invalid engine raises a ValueError."""
         with pytest.raises(ValueError) as excinfo:
             ImageGenProperties(
-                engine="invalid_engine", aspect_ratio="1:1", delination="test"
+                engine="invalid_engine", aspect_ratio="1:1", delineation="test"
             )
         assert "Invalid engine; valid choices are" in str(excinfo.value)
 

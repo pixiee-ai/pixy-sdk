@@ -27,7 +27,7 @@ Represents the properties for generating an image.
 }
 ```
 
-* delination<span style="color:red">*</span> (str): The textual prompt for image generation.
+* delineation<span style="color:red">*</span> (str): The textual prompt for image generation.
 * context (List [dict] | None): <span style="color:red">The context for image generation.</span>
 * enhance_prompt (bool | None): Whether to enhance the prompt with an automated assitance or not.
 
@@ -39,7 +39,7 @@ from core.schemas import ImageGenProperties
 properties = ImageGenProperties(
     engine = "photon_flash",
     aspect_ratio = "1:1",
-    delination = "a red kite flying over the sea",
+    delineation = "a red kite flying over the sea",
     context = [{}],
     enhance_prompt = True
 )

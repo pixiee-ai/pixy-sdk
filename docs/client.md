@@ -56,7 +56,7 @@ client = PixyClient(api_key)
 properties = ImageGenProperties(
     engine = "photon_flash",
     aspect_ratio = "1:1",
-    delination = "a red kite flying over the sea",
+    delineation = "a red kite flying over the sea",
     context = [{}],
     enhance_prompt = True
 )
@@ -369,7 +369,7 @@ client = PixyClient(api_key)
 
 generation_type = "image"
 uid = "desired_uid"
-properties = {"delination": "a blue kite flying over a green valley"}
+properties = {"delineation": "a blue kite flying over a green valley"}
 
 response = client.update(generation_type, uid, properties)
 

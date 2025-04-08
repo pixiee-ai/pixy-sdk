@@ -27,7 +27,7 @@ class TestGenerate:
         with pytest.raises(ValueError) as excinfo:
             generate(
                 generation_type="human",
-                properties=ImageGenProperties(engine="imagen", delination="test"),
+                properties=ImageGenProperties(engine="imagen", delineation="test"),
                 api_key=valid_api_key,
             )
 
