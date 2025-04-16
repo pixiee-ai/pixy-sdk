@@ -1,5 +1,5 @@
-from pixy.utils import verify, generate
-from core.schemas import ImageGenProperties, SubtitleGenProperties
+from src.pixy.utils import verify, generate
+from src.pixy.schemas import ImageGenProperties, SubtitleGenProperties
 import pytest
 from pydantic import BaseModel
 from typing import Literal

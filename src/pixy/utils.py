@@ -14,11 +14,10 @@ console_handler = logging.StreamHandler()
 logger.addHandler(console_handler)
 
 logger.setLevel(logging.INFO)
-settings = Settings()
 
 
 def verify(
-    api_key: str, url: str = settings.url_mapping.get("api_key_verification")
+    api_key: str, url: str = Settings.url_mapping.get("api_key_verification")
 ) -> bool:
     """
     Verifies the given API key.
@@ -58,8 +57,8 @@ def generate(
     generation_type: str,
     properties: ImageGenProperties | VideoGenProperties | SubtitleGenProperties,
     api_key: str,
-    url_mapping: dict = settings.url_mapping,
-    properties_mapping: dict = settings.properties_mapping,
+    url_mapping: dict = Settings.url_mapping,
+    properties_mapping: dict = Settings.properties_mapping,
 ) -> dict:
     """
     Generates a resource (image, video, subtitle) based on the given properties.
@@ -130,7 +129,7 @@ def get_by_uid(
     generation_type: str,
     uid: str,
     api_key: str,
-    url_mapping: dict = settings.url_mapping,
+    url_mapping: dict = Settings.url_mapping,
 ) -> dict:
     """
     Retrieves a resource by its unique identifier (UID).
@@ -166,8 +165,8 @@ def get_list(
     generation_type: str,
     api_key: str,
     params: GetListParameters | None = None,
-    url_mapping: dict = settings.url_mapping,
-):
+    url_mapping: dict = Settings.url_mapping,
+) -> dict:
     """
     Retrieves a list of resources filtered by the given parameters.
 
@@ -205,7 +204,7 @@ def delete(
     generation_type: str,
     uid: str,
     api_key: str,
-    url_mapping: dict = settings.url_mapping,
+    url_mapping: dict = Settings.url_mapping,
 ) -> dict:
     """
     Deletes a resource by its unique identifier.
@@ -243,7 +242,7 @@ def update(
     uid: str,
     properties: dict,
     api_key: str,
-    url_mapping: dict = settings.url_mapping,
+    url_mapping: dict = Settings.url_mapping,
 ) -> dict:
     """
     Updates a resource by its unique identifier with the given properties.

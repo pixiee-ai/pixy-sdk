@@ -1,25 +1,17 @@
-# Pixy SDK Client API Reference
+# PixyClient API Reference
 
-The Pixy SDK Client is a Python library that provides a simple interface for interacting with the Pixy SDK. It allows you to generate images, videos, and subtitles using the Pixy API. Using the SDK, offers the following functionalities:
-
-1. Generating images, videos, and subtitles
-2. Getting previously generated resources
-3. Updating previously generated resources
-4. Deleting previously generated resources
-
-## Installation
-
-### <span style="color:red">To be added</span>
+The easiest approach to use the Pixy SDK is to initialize a new instance of the PixyClient class, using the API key obtained from the Pixy panel. In this page, we walk through the whole functionalities of the PixyClient class, step by step.
 
 ## Usage
 
-### ```PixyClient(api_key: str)```
+### 1. ```PixyClient(api_key: str, settings: Settings = Settings)```
 
 #### Description:
 Initializes a new instance of the PixyClient class, given the API key. The API key is verified automatically.
 
 #### Args:
 * api_key (str): The API key obtained from the Pixy panel.
+* settings (Settings): The settings to use; stick to the default value, unless you have a custom provider. Checkout the [settings documentation]() for a comprehensive instruction on how to declare custom settings.
 
 #### Example:
 ```python

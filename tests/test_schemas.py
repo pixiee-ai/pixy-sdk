@@ -1,4 +1,4 @@
-from pixy.schemas import (
+from src.pixy.schemas import (
     ImageGenEngine,
     ImageGenProperties,
     SubtitleGenProperties,

@@ -2,20 +2,21 @@
 
 The Pixy SDK relys on a set of utility function, covering a wide range of tasks. In this section, each of them is discussed individually.
 
-## ```verify(api_key: str) -> bool```
+## ```verify(api_key: str, url: str = Settings.url_mapping.get("api_key_verification")) -> bool```
 
 ### Description:
 Verifies the given API key.
 
 ### Args:
 * api_key (str): The API key to verify.
+* url (str): The URL to call; stick to the default value, unless you have a custom provider.
 
 ### Returns:
 * bool: True if the API key is valid, False otherwise.
 
 ### Example:
 ```python
-from core.utils import verify
+from pixy.utils import verify
 
 api_key = "your_api_key"
 is_valid = verify(api_key)
@@ -24,7 +25,7 @@ print(is_valid)
 >>> True
 ```
 
-## ```generate(generation_type: str, properties: ImageGenProperties | VideoGenProperties | SubtitleGenProperties api_key: str,) -> dict```
+## ```generate(generation_type: str, properties: ImageGenProperties | VideoGenProperties | SubtitleGenProperties api_key: str, url_mapping: dict = Settings.url_mapping, properties_mapping: dict = Settings.properties_mapping,) -> dict```
 
 ### Description:
 Generates a resource (image, video, subtitle) based on the given properties.
@@ -33,14 +34,16 @@ Generates a resource (image, video, subtitle) based on the given properties.
 * generation_type (str): The type of resource to generate; current valid choices are "image", "video" and "subtitle".
 * properties (ImageGenProperties | VideoGenProperties | SubtitleGenProperties): The properties of the resource to generate; current valid choices are ImageGenProperties, VideoGenProperties and SubtitleGenProperties that correspond to "image", "video" and "subtitle", respectively.
 * api_key (str): The API key to use for the request.
+* url_mapping (dict): The URL mapping to determine the endpoint, given the `generation_type`; stick to the default value, unless you have a custom provider.
+* properties_mapping (dict): The properties mapping to determine the type of the `properties`, given the `generation_type`; stick to the default value, unless you have a custom provider.
 
 ### Returns:
 * dict: A JSON response containing the generated resource.
 
 ### Example:
 ```python
-from core.utils import generate
-from core.schemas import ImageGenProperties
+from pixy.utils import generate
+from pixy.schemas import ImageGenProperties
 
 api_key = "your_api_key"
 generation_type = "image"
@@ -94,7 +97,7 @@ print(resource)
 >>>}
 ```
 
-## ```get_by_uid(generation_type: str, uid: str, api_key: str) -> dict```
+## ```get_by_uid(generation_type: str, uid: str, api_key: str, url_mapping: dict = Settings.url_mapping) -> dict```
 
 ### Description:
 Retrieves a resource by its unique identifier (UID).
@@ -103,6 +106,7 @@ Retrieves a resource by its unique identifier (UID).
 * generation_type (str): The type of resource to retrieve; current valid choices are "image", "video" and "subtitle".
 * uid (str): The desired UID.
 * api_key (str): The API key to use for the request.
+* url_mapping (dict): The URL mapping to determine the endpoint, given the `generation_type`; stick to the default value, unless you have a custom provider.
 
 ### Returns:
 * dict: A JSON response inclding the desired resource.
@@ -110,7 +114,7 @@ Retrieves a resource by its unique identifier (UID).
 ### Example:
 
 ```python
-from core.utils import get_by_uid
+from pixy.utils import get_by_uid
 
 api_key = "your_api_key"
 generation_type = "image"
@@ -160,15 +164,17 @@ print(resource)
 >>>}
 ```
 
-## ```get_list(generation_type: str, params: GetListParameters | None, api_key: str) -> dict```
+## ```get_list(generation_type: str, api_key: str, params: GetListParameters | None = None, url_mapping: dict = Settings.url_mapping,
+) -> dict```
 
 ### Description:
 Retrieves a list of resources filtered by the given parameters.
 
 ### Args:
 * generation_type (str): The type of resource to retrieve.
-* params (GetListParameters | None): The parameters to filter the results by.
 * api_key (str): The API key to use for the request.
+* params (GetListParameters | None): The parameters to filter the results by; the default value is `None`.
+* url_mapping (dict): The URL mapping to determine the endpoint, given the `generation_type`; stick to the default value, unless you have a custom provider.
 
 ### Returns:
 * dict: A JSON response containing the retrieved resources.
@@ -176,8 +182,8 @@ Retrieves a list of resources filtered by the given parameters.
 ### Example:
 
 ```python
-from core.schemas import GetListParameters
-from core.utils import get_list
+from pixy.schemas import GetListParameters
+from pixy.utils import get_list
 
 api_key = "your_api_key"
 generation_type = "image"
@@ -191,10 +197,10 @@ params = GetListParameters(
 
 resources = get_list(
     generation_type,
-    params,
     api_key
+    params,
 )
-print(lenresources)
+print(resources)
 
 {
   "items": [
@@ -279,7 +285,7 @@ print(lenresources)
 }
 ```
 
-## ```delete(generation_type: str, uid: str, api_key: str) -> dict```
+## ```delete(generation_type: str, uid: str, api_key: str, url_mapping: dict = Settings.url_mapping) -> dict```
 
 ### Description:
 Deletes a resource by its unique identifier.
@@ -288,6 +294,7 @@ Deletes a resource by its unique identifier.
 * generation_type (str): The type of resource to delete.
 * uid (str): The unique identifier of the resource.
 * api_key (str): The API key to use for the request.
+* url_mapping (dict): The URL mapping to determine the endpoint, given the `generation_type`; stick to the default value, unless you have a custom provider.
 
 ### Returns:
 * dict: A JSON response indicating the result of the deletion.
@@ -295,7 +302,7 @@ Deletes a resource by its unique identifier.
 ### Example:
 
 ```python
-from core.utils import delete
+from pixy.utils import delete
 
 api_key = "your_api_key"
 generation_type = "image"
@@ -343,7 +350,7 @@ response = delete(generation_type, uid, api_key)
 }
 ```
 
-## ```update(generation_type: str, uid: str, properties: dict, api_key: str) -> dict```
+## ```update(generation_type: str, uid: str, properties: dict, api_key: str, url_mapping: dict = Settings.url_mapping) -> dict```
     
 ### Description:
 Updates a resource by its unique identifier with the given properties.
@@ -353,13 +360,14 @@ Updates a resource by its unique identifier with the given properties.
 * uid (str): The unique identifier of the resource.
 * properties (dict): The properties to update the resource with. This is supposed to only include the key-values to update.
 * api_key (str): The API key to use for the request.
+* url_mapping (dict): The URL mapping to determine the endpoint, given the `generation_type`; stick to the default value, unless you have a custom provider.
 
 ### Returns:
 * dict: A JSON response containing the updated resource.
 
 ### Example:
 ```python
-from core.utils import update
+from pixy.utils import update
 
 api_key = "your_api_key"
 generation_type = "image"

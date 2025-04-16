@@ -16,7 +16,7 @@ logger.setLevel(logging.INFO)
 
 
 class PixyClient:
-    def __init__(self, api_key: str, settings: Settings = Settings()):
+    def __init__(self, api_key: str, settings: Settings = Settings):
         """
         Initialize the Pixy client.
 
