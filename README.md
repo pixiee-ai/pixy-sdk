@@ -4,6 +4,8 @@ Pixy is a GenAI plform to generate multi-media resources. This SDK provides a su
 
 ## Installation
 
+We recommend installing the SDK using pip, easily as below:
+
 ```bash
 pip install pixy-sdk
 ```

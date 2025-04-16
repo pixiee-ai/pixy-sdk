@@ -6,6 +6,7 @@ from .schemas import (
 )
 from .utils import verify, generate, get_by_uid, get_list, delete, update
 import logging
+from .settings import Settings
 
 logger = logging.getLogger(__name__)
 console_handler = logging.StreamHandler()
@@ -15,7 +16,7 @@ logger.setLevel(logging.INFO)
 
 
 class PixyClient:
-    def __init__(self, api_key: str):
+    def __init__(self, api_key: str, settings: Settings = Settings()):
         """
         Initialize the Pixy client.
 
@@ -26,7 +27,9 @@ class PixyClient:
             Exception: If the API key is not valid.
         """
 
-        if not verify(api_key):
+        self.settings = settings
+
+        if not verify(api_key, self.settings.url_mapping.get("api_key_verification")):
             raise Exception("API key verification failed.")
 
         self.api_key = api_key
@@ -48,7 +51,13 @@ class PixyClient:
             dict: A JSON response containing the generated resource.
         """
 
-        return generate(generation_type, properties, self.api_key)
+        return generate(
+            generation_type,
+            properties,
+            self.api_key,
+            self.settings.url_mapping,
+            self.settings.properties_mapping,
+        )
 
     def get_by_uid(self, generation_type: str, uid: str):
         """
@@ -62,9 +71,14 @@ class PixyClient:
             dict: A JSON response containing the retrieved resource.
         """
 
-        return get_by_uid(generation_type, uid, self.api_key)
+        return get_by_uid(
+            generation_type,
+            uid,
+            self.api_key,
+            self.settings.url_mapping,
+        )
 
-    def get_list(self, generation_type: str, params: GetListParameters | None):
+    def get_list(self, generation_type: str, params: GetListParameters | None = None):
         """
         Retrieves a list of resources filtered by the given parameters using the Pixy API.
 
@@ -76,7 +90,12 @@ class PixyClient:
             dict: A JSON response containing the retrieved resources.
         """
 
-        return get_list(generation_type, params, self.api_key)
+        return get_list(
+            generation_type,
+            self.api_key,
+            params,
+            self.settings.url_mapping,
+        )
 
     def delete(self, generation_type: str, uid: str):
         """
@@ -89,7 +108,12 @@ class PixyClient:
         Returns:
             dict: A JSON response indicating the result of the deletion.
         """
-        return delete(generation_type, uid, self.api_key)
+        return delete(
+            generation_type,
+            uid,
+            self.api_key,
+            self.settings.url_mapping,
+        )
 
     def update(
         self,
@@ -110,4 +134,10 @@ class PixyClient:
         Returns:
             dict: A JSON response containing the updated resource.
         """
-        return update(generation_type, uid, properties, self.api_key)
+        return update(
+            generation_type,
+            uid,
+            properties,
+            self.api_key,
+            self.settings.url_mapping,
+        )

@@ -17,12 +17,15 @@ logger.setLevel(logging.INFO)
 settings = Settings()
 
 
-def verify(api_key: str) -> bool:
+def verify(
+    api_key: str, url: str = settings.url_mapping.get("api_key_verification")
+) -> bool:
     """
     Verifies the given API key.
 
     Args:
     api_key (str): The API key to verify.
+    url (str): The URL to verify the API key.
 
     Returns:
     bool: True if the API key is valid, False otherwise.
@@ -36,7 +39,7 @@ def verify(api_key: str) -> bool:
 
     with httpx.Client() as client:
         response = client.post(
-            settings.url_mapping.get("api_key_verification"),
+            url,
             headers=headers,
             json=json_data,
         )
@@ -55,6 +58,8 @@ def generate(
     generation_type: str,
     properties: ImageGenProperties | VideoGenProperties | SubtitleGenProperties,
     api_key: str,
+    url_mapping: dict = settings.url_mapping,
+    properties_mapping: dict = settings.properties_mapping,
 ) -> dict:
     """
     Generates a resource (image, video, subtitle) based on the given properties.
@@ -63,35 +68,36 @@ def generate(
     generation_type (str): The type of resource to generate.
     properties (ImageGenProperties | VideoGenProperties | SubtitleGenProperties): The properties of the resource to generate.
     api_key (str): The API key to use for the request.
+    url (str): The URL to generate the resource.
 
     Returns:
     dict: A JSON response containing the generated resource.
     """
-    if not generation_type in settings.properties_mapping.keys():
+    if not generation_type in properties_mapping.keys():
         logger.error(
-            f"{generation_type} is an invalid value for generation_type; valid choices are: {settings.properties_mapping.keys()}."
+            f"{generation_type} is an invalid value for generation_type; valid choices are: {properties_mapping.keys()}."
         )
         raise ValueError(
-            f"{generation_type} is an invalid value for generation_type; valid choices are: {settings.properties_mapping.keys()}."
+            f"{generation_type} is an invalid value for generation_type; valid choices are: {properties_mapping.keys()}."
         )
 
     if not isinstance(
         properties, (ImageGenProperties, VideoGenProperties, SubtitleGenProperties)
     ):
         logger.error(
-            f"{type(properties).__name__} is an invalid properties type; valid choices are: {[item.__name__ for item in settings.properties_mapping.values()]}"
+            f"{type(properties).__name__} is an invalid properties type; valid choices are: {[item.__name__ for item in properties_mapping.values()]}"
         )
         raise TypeError(
-            f"{type(properties).__name__} is an invalid properties type; valid choices are: {[item.__name__ for item in settings.properties_mapping.values()]}"
+            f"{type(properties).__name__} is an invalid properties type; valid choices are: {[item.__name__ for item in properties_mapping.values()]}"
         )
 
-    if settings.properties_mapping[generation_type] != properties.__class__:
+    if properties_mapping[generation_type] != properties.__class__:
 
         logger.exception(
-            f"{generation_type} generation requires property of type {settings.properties_mapping[generation_type].__name__}, not {type(properties).__name__}."
+            f"{generation_type} generation requires property of type {properties_mapping[generation_type].__name__}, not {type(properties).__name__}."
         )
         raise Exception(
-            f"{generation_type} generation requires property of type {settings.properties_mapping[generation_type].__name__}, not {type(properties).__name__}."
+            f"{generation_type} generation requires property of type {properties_mapping[generation_type].__name__}, not {type(properties).__name__}."
         )
 
     headers = {
@@ -105,7 +111,7 @@ def generate(
     try:
         with httpx.Client() as client:
             response = client.post(
-                settings.url_mapping[generation_type], headers=headers, json=json_data
+                url_mapping[generation_type], headers=headers, json=json_data
             )
             response.raise_for_status()
             if response.status_code != 201:
@@ -120,7 +126,12 @@ def generate(
         logger.exception(f"An unexpected error occurred: {e}")
 
 
-def get_by_uid(generation_type: str, uid: str, api_key: str) -> dict:
+def get_by_uid(
+    generation_type: str,
+    uid: str,
+    api_key: str,
+    url_mapping: dict = settings.url_mapping,
+) -> dict:
     """
     Retrieves a resource by its unique identifier (UID).
 
@@ -143,9 +154,7 @@ def get_by_uid(generation_type: str, uid: str, api_key: str) -> dict:
     }
 
     with httpx.Client() as client:
-        response = client.get(
-            f"{settings.url_mapping[generation_type]}{uid}", headers=headers
-        )
+        response = client.get(f"{url_mapping[generation_type]}{uid}", headers=headers)
 
     try:
         return response.json()
@@ -153,7 +162,12 @@ def get_by_uid(generation_type: str, uid: str, api_key: str) -> dict:
         logger.exception(f"An unexpected error occurred: {e}")
 
 
-def get_list(generation_type: str, params: GetListParameters | None, api_key: str):
+def get_list(
+    generation_type: str,
+    api_key: str,
+    params: GetListParameters | None = None,
+    url_mapping: dict = settings.url_mapping,
+):
     """
     Retrieves a list of resources filtered by the given parameters.
 
@@ -176,7 +190,7 @@ def get_list(generation_type: str, params: GetListParameters | None, api_key: st
 
     with httpx.Client() as client:
         response = client.get(
-            settings.url_mapping[generation_type],
+            url_mapping[generation_type],
             headers=headers,
             params=params.model_dump(exclude_none=True) if params else None,
         )
@@ -187,7 +201,12 @@ def get_list(generation_type: str, params: GetListParameters | None, api_key: st
         logger.exception(f"An unexpected error occurred: {e}")
 
 
-def delete(generation_type: str, uid: str, api_key: str) -> dict:
+def delete(
+    generation_type: str,
+    uid: str,
+    api_key: str,
+    url_mapping: dict = settings.url_mapping,
+) -> dict:
     """
     Deletes a resource by its unique identifier.
 
@@ -211,7 +230,7 @@ def delete(generation_type: str, uid: str, api_key: str) -> dict:
     try:
         with httpx.Client() as client:
             response = client.delete(
-                f"{settings.url_mapping[generation_type]}{uid}", headers=headers
+                f"{url_mapping[generation_type]}{uid}", headers=headers
             )
         response.raise_for_status()
         return response.json()
@@ -219,7 +238,13 @@ def delete(generation_type: str, uid: str, api_key: str) -> dict:
         logger.exception(f"An unexpected error occurred: {e}")
 
 
-def update(generation_type: str, uid: str, properties: dict, api_key: str) -> dict:
+def update(
+    generation_type: str,
+    uid: str,
+    properties: dict,
+    api_key: str,
+    url_mapping: dict = settings.url_mapping,
+) -> dict:
     """
     Updates a resource by its unique identifier with the given properties.
 
@@ -245,7 +270,7 @@ def update(generation_type: str, uid: str, properties: dict, api_key: str) -> di
     try:
         with httpx.Client() as client:
             response = client.patch(
-                f"{settings.url_mapping[generation_type]}{uid}",
+                f"{url_mapping[generation_type]}{uid}",
                 headers=headers,
                 json=properties,
             )
